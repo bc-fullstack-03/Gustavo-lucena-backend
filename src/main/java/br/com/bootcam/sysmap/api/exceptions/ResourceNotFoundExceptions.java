@@ -1,4 +1,4 @@
-package br.com.bootcam.sysmap.services.exceptions;
+package br.com.bootcam.sysmap.api.exceptions;
 
 public class ResourceNotFoundExceptions extends RuntimeException{
 

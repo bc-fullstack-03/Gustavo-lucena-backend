@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +24,7 @@ public class User implements UserDetails {
     private String avatarImgURL;
     private List<UUID> followers;
     private List<UUID> following;
+    private LocalDateTime createdAt;
 
     private Role role;
 
@@ -57,6 +59,10 @@ public class User implements UserDetails {
         this.name = request.getName();
         this.email = request.getEmail();
         this.password = request.getPassword();
+    }
+
+    public void setCreatedAt(){
+        this.createdAt = LocalDateTime.now();
     }
 
     @Override

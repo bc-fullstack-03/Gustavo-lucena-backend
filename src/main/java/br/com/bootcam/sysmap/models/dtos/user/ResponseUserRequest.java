@@ -1,11 +1,15 @@
 package br.com.bootcam.sysmap.models.dtos.user;
 
 import br.com.bootcam.sysmap.models.entities.User;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResponseUserRequest {
 
     private UUID id;
@@ -14,9 +18,6 @@ public class ResponseUserRequest {
     private String avatarImgUrl;
     private Integer followers;
     private Integer following;
-
-    public ResponseUserRequest() {
-    }
 
     public ResponseUserRequest(User user) {
         this.id = user.getId();

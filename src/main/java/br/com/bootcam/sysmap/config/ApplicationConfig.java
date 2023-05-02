@@ -1,7 +1,6 @@
 package br.com.bootcam.sysmap.config;
 
-import br.com.bootcam.sysmap.data.UserRepository;
-import br.com.bootcam.sysmap.services.exceptions.ResourceNotFoundExceptions;
+import br.com.bootcam.sysmap.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +10,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -22,17 +20,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    final private UserRepository userRepository;
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username ->  userRepository.findUserByEmail(username).orElseThrow(() -> new ResourceNotFoundExceptions("Usuario não encontrado"));
-    }
+    final private UserService userService;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(userService::getUserByEmail);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
