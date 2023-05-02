@@ -24,6 +24,12 @@ public class PostController {
         return new ResponseEntity<>(postService.sendPost(request), HttpStatus.CREATED);
     }
 
+    @PostMapping("/like/{postId}")
+    public ResponseEntity<Void> setLike(@PathVariable("postId") String postId){
+        postService.setLike(postId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public ResponseEntity<List<ResponsePostRequest>> findAllPosts(){
         return ResponseEntity.ok(postService.findAllPosts());

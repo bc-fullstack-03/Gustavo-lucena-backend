@@ -8,10 +8,11 @@ import br.com.bootcam.sysmap.models.dtos.post.ResponsePostRequest;
 import br.com.bootcam.sysmap.models.entities.Post;
 import br.com.bootcam.sysmap.models.entities.User;
 import br.com.bootcam.sysmap.services.auth.AuthenticationService;
-import br.com.bootcam.sysmap.services.user.UserService;
+import br.com.bootcam.sysmap.services.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,15 +21,35 @@ import java.util.UUID;
 public class PostService implements IPostService{
 
     private final PostRepository postRepository;
-    private final UserService userService;
+    private final IUserService userService;
+
+    @Override
+    public void savePost(Post post) {
+        postRepository.save(post);
+    }
 
     public String sendPost(RegisterPostRequest request){
         User logged = AuthenticationService.getLoggedUser();
         Post post = new Post(logged.getId(), request.getContent());
 
-        postRepository.save(post);
+        savePost(post);
 
         return post.getId().toString();
+    }
+
+    @Override
+    public void setLike(String postId) {
+        Post post = getPostById(postId);
+        User user = AuthenticationService.getLoggedUser();
+
+        if(post.getLikes() == null) post.setLikes(new ArrayList<>());
+        if(post.getLikes().contains(user.getId())){
+            post.getLikes().remove(user.getId());
+        }else {
+            post.getLikes().add(user.getId());
+        }
+
+        savePost(post);
     }
 
     @Override
@@ -39,21 +60,21 @@ public class PostService implements IPostService{
 
     @Override
     public String updatePost(RegisterPostRequest request, String postId) {
-        Post postForUpdate = getPostById(UUID.fromString(postId));
+        Post postForUpdate = getPostById(postId);
         User userPost = userService.getUserById(postForUpdate.getUserId());
         User logged = AuthenticationService.getLoggedUser();
 
         if(!userPost.equals(logged)) throw new NoAccessException("Usuário não autorizado.");
 
         postForUpdate.setContent(request.getContent());
-        postRepository.save(postForUpdate);
+        savePost(postForUpdate);
 
         return postForUpdate.getUserId().toString();
     }
 
     @Override
-    public Post getPostById (UUID id){
-        return postRepository.findById(id).orElseThrow(
+    public Post getPostById (String id){
+        return postRepository.findById(UUID.fromString(id)).orElseThrow(
                 () -> new ResourceNotFoundExceptions("Post não encontrado")
         );
     }
@@ -62,4 +83,6 @@ public class PostService implements IPostService{
     public void deletePost(String postId) {
         postRepository.deleteById(UUID.fromString(postId));
     }
+
+
 }

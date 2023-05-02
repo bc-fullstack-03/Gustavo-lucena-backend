@@ -1,5 +1,6 @@
 package br.com.bootcam.sysmap.services.user;
 
+import br.com.bootcam.sysmap.api.exceptions.UserAlreadyExistsException;
 import br.com.bootcam.sysmap.data.UserRepository;
 import br.com.bootcam.sysmap.models.dtos.user.CreateUserRequest;
 import br.com.bootcam.sysmap.models.dtos.user.ResponseUserRequest;
@@ -21,6 +22,10 @@ public class UserService implements IUserService{
 
     @Override
     public String createUser(CreateUserRequest request){
+        userRepository.findUserByEmail(request.getEmail()).ifPresent(s -> {
+            throw new UserAlreadyExistsException("Este email de usuário já existe");
+        });
+
         User user = new User(request);
         user.setCreatedAt();
 

@@ -6,7 +6,7 @@ import br.com.bootcam.sysmap.models.dtos.auth.AuthenticationResponse;
 import br.com.bootcam.sysmap.models.dtos.user.CreateUserRequest;
 import br.com.bootcam.sysmap.models.dtos.user.ResponseUserRequest;
 import br.com.bootcam.sysmap.models.entities.User;
-import br.com.bootcam.sysmap.services.user.UserService;
+import br.com.bootcam.sysmap.services.user.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService implements IAuthenticationService{
 
-    private final UserService userService;
+    private final IUserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;

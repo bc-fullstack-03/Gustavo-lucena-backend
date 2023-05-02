@@ -1,5 +1,6 @@
 package br.com.bootcam.sysmap.config;
 
+import br.com.bootcam.sysmap.services.user.IUserService;
 import br.com.bootcam.sysmap.services.user.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String BEARER = "Bearer ";
 
     private final JwtService jwtService;
-    private final UserService userService;
+    private final IUserService userService;
 
     @Override
     protected void doFilterInternal( @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {

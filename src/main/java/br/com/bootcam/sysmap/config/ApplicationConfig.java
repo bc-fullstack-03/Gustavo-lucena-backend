@@ -1,5 +1,6 @@
 package br.com.bootcam.sysmap.config;
 
+import br.com.bootcam.sysmap.services.user.IUserService;
 import br.com.bootcam.sysmap.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    final private UserService userService;
+    final private IUserService userService;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

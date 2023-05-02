@@ -10,10 +10,11 @@ import java.util.UUID;
 
 public interface IPostService {
 
+    void savePost (Post post);
     String sendPost(RegisterPostRequest request);
+    void setLike (String postId);
     List<ResponsePostRequest> findAllPosts();
     String updatePost(RegisterPostRequest request, String postId);
-    Post getPostById (UUID id);
-
+    Post getPostById (String id);
     void deletePost(String postId);
 }
