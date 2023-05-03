@@ -1,27 +1,29 @@
 package br.com.bootcam.sysmap.services.user;
 
+import br.com.bootcam.sysmap.api.exceptions.MethodNotAllowedException;
+import br.com.bootcam.sysmap.api.exceptions.ResourceNotFoundExceptions;
 import br.com.bootcam.sysmap.api.exceptions.UserAlreadyExistsException;
 import br.com.bootcam.sysmap.data.UserRepository;
 import br.com.bootcam.sysmap.models.dtos.user.CreateUserRequest;
 import br.com.bootcam.sysmap.models.dtos.user.ResponseUserRequest;
+import br.com.bootcam.sysmap.models.dtos.user.UpdateUserRequest;
 import br.com.bootcam.sysmap.models.entities.User;
 import br.com.bootcam.sysmap.services.auth.AuthenticationService;
-import br.com.bootcam.sysmap.api.exceptions.ResourceNotFoundExceptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class UserService implements IUserService{
+public class UserService implements IUserService {
 
     private final UserRepository userRepository;
 
+
     @Override
-    public String createUser(CreateUserRequest request){
+    public void createUser(CreateUserRequest request) {
         userRepository.findUserByEmail(request.getEmail()).ifPresent(s -> {
             throw new UserAlreadyExistsException("Este email de usuário já existe");
         });
@@ -29,9 +31,7 @@ public class UserService implements IUserService{
         User user = new User(request);
         user.setCreatedAt();
 
-        userRepository.save(user);
-
-        return user.getId().toString();
+        save(user);
     }
 
     @Override
@@ -41,13 +41,13 @@ public class UserService implements IUserService{
         return usersRequest.stream().map(ResponseUserRequest::new).toList();
     }
 
-    public List<ResponseUserRequest> getUsersByEmail(String email){
+    public List<ResponseUserRequest> findUsersByEmail(String email) {
         List<User> usersRequest = userRepository.findUserByEmailContainingIgnoreCase(email);
         return usersRequest.stream().map(ResponseUserRequest::new).toList();
     }
 
     @Override
-    public List<ResponseUserRequest> getUserFollowersByEmail(String email){
+    public List<ResponseUserRequest> findUserFollowersByEmail(String email) {
         User user = getUserByEmail(email);
         List<User> followers = userRepository.findUserByIdIn(user.getFollowers());
 
@@ -55,35 +55,28 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public List<ResponseUserRequest> getUserFollowingByEmail(String email) {
+    public List<ResponseUserRequest> findUserFollowingByEmail(String email) {
         User user = getUserByEmail(email);
         List<User> followers = userRepository.findUserByIdIn(user.getFollowing());
 
         return followers.stream().map(ResponseUserRequest::new).toList();
     }
 
-    public void followAndUnfollow(String email){
+    public void followOrUnfollow(String email) {
         User logged = AuthenticationService.getLoggedUser();
         User followUser = getUserByEmail(email);
 
-        if (logged.getFollowing() == null) logged.setFollowing(new ArrayList<>());
-        if (followUser.getFollowers() == null) followUser.setFollowers(new ArrayList<>());
+        if (logged.getId().equals(followUser.getId())) throw new MethodNotAllowedException("Você não pode seguir se mesmo(a)");
 
-        if (logged.getFollowing().stream().anyMatch(x -> followUser.getId().equals(x))) {
-            logged.getFollowing().remove(followUser.getId());
-            followUser.getFollowers().remove(logged.getId());
-        }else {
-            logged.getFollowing().add(followUser.getId());
-            followUser.getFollowers().add(logged.getId());
-        }
+        logged.followOrUnfollow(followUser);
 
-        userRepository.save(logged);
-        userRepository.save(followUser);
+        save(logged);
+        save(followUser);
     }
 
     @Override
-    public String updateUser(CreateUserRequest request){
-        User loggedUser = getUserByEmail(request.getEmail());
+    public String updateUser(UpdateUserRequest request) {
+        User loggedUser = AuthenticationService.getLoggedUser();
         loggedUser.update(request);
 
         userRepository.save(loggedUser);
@@ -91,22 +84,32 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public User getUserByEmail(String email){
+    public User getUserByEmail(String email) {
         return userRepository.findUserByEmail(email).orElseThrow(
                 () -> new ResourceNotFoundExceptions("User not found with email " + email)
         );
     }
 
     @Override
-    public User getUserById(UUID id){
+    public ResponseUserRequest findUserById(String userId) {
+        return new ResponseUserRequest(getUserById(UUID.fromString(userId)));
+    }
+
+    @Override
+    public User getUserById(UUID id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundExceptions("User not found")
         );
     }
 
     @Override
-    public void deleteUser(String email){
-        User user = getUserByEmail(email);
+    public void deleteUser() {
+        User user = AuthenticationService.getLoggedUser();
         userRepository.delete(user);
+    }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
     }
 }

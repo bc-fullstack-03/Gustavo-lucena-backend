@@ -1,5 +1,6 @@
-package br.com.bootcam.sysmap.config;
+package br.com.bootcam.sysmap.config.security;
 
+import br.com.bootcam.sysmap.config.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

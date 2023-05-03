@@ -1,7 +1,6 @@
-package br.com.bootcam.sysmap.config;
+package br.com.bootcam.sysmap.config.security;
 
 import br.com.bootcam.sysmap.services.user.IUserService;
-import br.com.bootcam.sysmap.services.user.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

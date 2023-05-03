@@ -1,4 +1,4 @@
-package br.com.bootcam.sysmap.config;
+package br.com.bootcam.sysmap.config.security;
 
 
 import io.jsonwebtoken.Claims;

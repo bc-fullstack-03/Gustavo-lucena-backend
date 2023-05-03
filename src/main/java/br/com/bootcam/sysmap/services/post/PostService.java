@@ -59,6 +59,12 @@ public class PostService implements IPostService{
     }
 
     @Override
+    public List<ResponsePostRequest> findAllPostsFromAnUser(String userId) {
+        List<Post> posts = postRepository.findAllPostByUserId(UUID.fromString(userId));
+        return posts.stream().map(ResponsePostRequest::new).toList();
+    }
+
+    @Override
     public String updatePost(RegisterPostRequest request, String postId) {
         Post postForUpdate = getPostById(postId);
         User userPost = userService.getUserById(postForUpdate.getUserId());
@@ -77,6 +83,12 @@ public class PostService implements IPostService{
         return postRepository.findById(UUID.fromString(id)).orElseThrow(
                 () -> new ResourceNotFoundExceptions("Post não encontrado")
         );
+    }
+
+    @Override
+    public List<ResponsePostRequest>  getPostsByUserId (String userId){
+        List<Post> posts = postRepository.findAllPostByUserId(UUID.fromString(userId));
+        return posts.stream().map(ResponsePostRequest::new).toList();
     }
 
     @Override
