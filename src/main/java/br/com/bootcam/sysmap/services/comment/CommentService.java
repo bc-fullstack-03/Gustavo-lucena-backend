@@ -29,7 +29,7 @@ public class CommentService implements ICommentService{
         Comment comment = new Comment(user.getEmail(), request.getContent());
 
         post.getComments().add(comment);
-        postService.savePost(post);
+        postService.save(post);
 
         return new ResponseCommentsRequest(comment);
     }
@@ -41,8 +41,11 @@ public class CommentService implements ICommentService{
 
     @Override
     public void deleteComment(String postId, String commentId) {
+        User logged = AuthenticationService.getLoggedUser();
         Post post = postService.getPostById(postId);
-        post.getComments().removeIf(x -> x.getId().equals(UUID.fromString(commentId)));
-        postService.savePost(post);
+
+        post.removeComment(UUID.fromString(commentId), logged.getEmail());
+
+        postService.save(post);
     }
 }

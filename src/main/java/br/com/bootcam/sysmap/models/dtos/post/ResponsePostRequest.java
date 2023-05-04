@@ -15,6 +15,7 @@ public class ResponsePostRequest {
     private UUID id;
     private UUID userId;
     private String content;
+    private String fileUrl;
     private Integer likes;
     private Integer comments;
 
@@ -22,6 +23,7 @@ public class ResponsePostRequest {
         this.id = post.getId();
         this.userId = post.getUserId();
         this.content = post.getContent();
+        this.fileUrl = post.getFileUrl();
         this.likes = post.getLikes() == null ? 0 : post.getLikes().size();
         this.comments = post.getComments() == null ? 0 : post.getComments().size();
     }

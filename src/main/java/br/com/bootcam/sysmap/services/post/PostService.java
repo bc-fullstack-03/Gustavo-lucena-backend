@@ -1,18 +1,22 @@
 package br.com.bootcam.sysmap.services.post;
 
+import br.com.bootcam.sysmap.api.exceptions.MethodNotAllowedException;
 import br.com.bootcam.sysmap.api.exceptions.NoAccessException;
 import br.com.bootcam.sysmap.api.exceptions.ResourceNotFoundExceptions;
+import br.com.bootcam.sysmap.api.exceptions.UploadFileException;
 import br.com.bootcam.sysmap.data.PostRepository;
 import br.com.bootcam.sysmap.models.dtos.post.RegisterPostRequest;
 import br.com.bootcam.sysmap.models.dtos.post.ResponsePostRequest;
+import br.com.bootcam.sysmap.models.dtos.user.ResponseUserRequest;
 import br.com.bootcam.sysmap.models.entities.Post;
 import br.com.bootcam.sysmap.models.entities.User;
 import br.com.bootcam.sysmap.services.auth.AuthenticationService;
+import br.com.bootcam.sysmap.services.fileUpload.IFileUploadService;
 import br.com.bootcam.sysmap.services.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,34 +26,45 @@ public class PostService implements IPostService{
 
     private final PostRepository postRepository;
     private final IUserService userService;
+    private final IFileUploadService fileUploadService;
 
     @Override
-    public void savePost(Post post) {
+    public void save(Post post) {
         postRepository.save(post);
     }
 
-    public String sendPost(RegisterPostRequest request){
+    @Override
+    public String sendPost(String content, MultipartFile postFile){
+        if(content == null && postFile == null)
+            throw new MethodNotAllowedException("O post deve ter pelo menos uma imagem ou um texto");
+
         User logged = AuthenticationService.getLoggedUser();
-        Post post = new Post(logged.getId(), request.getContent());
+        Post post = new Post(logged.getId(), content);
 
-        savePost(post);
+        if (postFile != null){
+            String fileUrl;
 
+            try {
+                fileUrl = fileUploadService.upload(postFile, post.getId());
+            }catch (Exception ex){
+                throw new UploadFileException("Erro ao fazer upload de imagem");
+            }
+
+            post.setFileUrl(fileUrl);
+        }
+
+        save(post);
         return post.getId().toString();
     }
 
     @Override
-    public void setLike(String postId) {
+    public void setOrUnSetLike(String postId) {
         Post post = getPostById(postId);
         User user = AuthenticationService.getLoggedUser();
 
-        if(post.getLikes() == null) post.setLikes(new ArrayList<>());
-        if(post.getLikes().contains(user.getId())){
-            post.getLikes().remove(user.getId());
-        }else {
-            post.getLikes().add(user.getId());
-        }
+        post.like(user.getId());
 
-        savePost(post);
+        save(post);
     }
 
     @Override
@@ -65,6 +80,19 @@ public class PostService implements IPostService{
     }
 
     @Override
+    public List<ResponsePostRequest> findAllPostsFromFollowingsUser() {
+        User user = AuthenticationService.getLoggedUser();
+        List<Post> posts = postRepository.findPostByUserIdIn(user.getFollowing());
+        return posts.stream().map(ResponsePostRequest::new).toList();
+    }
+
+    @Override
+    public List<ResponseUserRequest> findAllUsersLikedPost(String postId) {
+        Post post = getPostById(postId);
+        return userService.findUsersByIds(post.getLikes());
+    }
+
+    @Override
     public String updatePost(RegisterPostRequest request, String postId) {
         Post postForUpdate = getPostById(postId);
         User userPost = userService.getUserById(postForUpdate.getUserId());
@@ -73,7 +101,7 @@ public class PostService implements IPostService{
         if(!userPost.equals(logged)) throw new NoAccessException("Usuário não autorizado.");
 
         postForUpdate.setContent(request.getContent());
-        savePost(postForUpdate);
+        save(postForUpdate);
 
         return postForUpdate.getUserId().toString();
     }
@@ -86,15 +114,19 @@ public class PostService implements IPostService{
     }
 
     @Override
-    public List<ResponsePostRequest>  getPostsByUserId (String userId){
+    public List<ResponsePostRequest> getPostsByUserId (String userId){
         List<Post> posts = postRepository.findAllPostByUserId(UUID.fromString(userId));
         return posts.stream().map(ResponsePostRequest::new).toList();
     }
 
     @Override
     public void deletePost(String postId) {
-        postRepository.deleteById(UUID.fromString(postId));
-    }
+        User logged = AuthenticationService.getLoggedUser();
+        Post post = getPostById(postId);
 
+        post.isValidToDelete(logged.getId());
+
+        postRepository.delete(post);
+    }
 
 }

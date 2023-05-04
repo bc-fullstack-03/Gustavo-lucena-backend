@@ -41,13 +41,10 @@ public class UserService implements IUserService {
     @Override
     public String registerAvatarImg(MultipartFile avatarImg) {
         User user = AuthenticationService.getLoggedUser();
-
-        String avatarImgUri = "";
+        String avatarImgUri;
 
         try {
-            String fileName = user.getId() + "." + avatarImg.getOriginalFilename().substring(avatarImg.getOriginalFilename().lastIndexOf(".")+ 1);
-
-            avatarImgUri = fileUploadService.upload(avatarImg, fileName);
+            avatarImgUri = fileUploadService.upload(avatarImg, user.getId());
         }catch (Exception ex){
             throw new UploadFileException("Erro ao fazer upload de imagem");
         }
@@ -83,6 +80,12 @@ public class UserService implements IUserService {
         User user = getUserByEmail(email);
         List<User> followers = userRepository.findUserByIdIn(user.getFollowing());
 
+        return followers.stream().map(ResponseUserRequest::new).toList();
+    }
+
+    @Override
+    public List<ResponseUserRequest> findUsersByIds(List<UUID> uuids) {
+        List<User> followers = userRepository.findUserByIdIn(uuids);
         return followers.stream().map(ResponseUserRequest::new).toList();
     }
 

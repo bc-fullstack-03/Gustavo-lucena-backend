@@ -16,6 +16,7 @@ public interface IUserService {
     List<ResponseUserRequest> findUsersByEmail(String email);
     List<ResponseUserRequest> findUserFollowersByEmail(String email);
     List<ResponseUserRequest> findUserFollowingByEmail(String email);
+    List<ResponseUserRequest> findUsersByIds(List<UUID> uuids);
     void followOrUnfollow(String email);
     String updateUser(UpdateUserRequest request);
     User getUserByEmail(String email);
