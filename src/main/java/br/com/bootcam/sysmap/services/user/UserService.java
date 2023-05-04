@@ -2,6 +2,7 @@ package br.com.bootcam.sysmap.services.user;
 
 import br.com.bootcam.sysmap.api.exceptions.MethodNotAllowedException;
 import br.com.bootcam.sysmap.api.exceptions.ResourceNotFoundExceptions;
+import br.com.bootcam.sysmap.api.exceptions.UploadFileException;
 import br.com.bootcam.sysmap.api.exceptions.UserAlreadyExistsException;
 import br.com.bootcam.sysmap.data.UserRepository;
 import br.com.bootcam.sysmap.models.dtos.user.CreateUserRequest;
@@ -9,8 +10,10 @@ import br.com.bootcam.sysmap.models.dtos.user.ResponseUserRequest;
 import br.com.bootcam.sysmap.models.dtos.user.UpdateUserRequest;
 import br.com.bootcam.sysmap.models.entities.User;
 import br.com.bootcam.sysmap.services.auth.AuthenticationService;
+import br.com.bootcam.sysmap.services.fileUpload.IFileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +23,7 @@ import java.util.UUID;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
+    private final IFileUploadService fileUploadService;
 
 
     @Override
@@ -32,6 +36,26 @@ public class UserService implements IUserService {
         user.setCreatedAt();
 
         save(user);
+    }
+
+    @Override
+    public String registerAvatarImg(MultipartFile avatarImg) {
+        User user = AuthenticationService.getLoggedUser();
+
+        String avatarImgUri = "";
+
+        try {
+            String fileName = user.getId() + "." + avatarImg.getOriginalFilename().substring(avatarImg.getOriginalFilename().lastIndexOf(".")+ 1);
+
+            avatarImgUri = fileUploadService.upload(avatarImg, fileName);
+        }catch (Exception ex){
+            throw new UploadFileException("Erro ao fazer upload de imagem");
+        }
+
+        user.setAvatarImgURL(avatarImgUri);
+        save(user);
+
+        return null;
     }
 
     @Override
