@@ -46,7 +46,7 @@ public class UserService implements IUserService {
         try {
             avatarImgUri = fileUploadService.upload(avatarImg, user.getId());
         }catch (Exception ex){
-            throw new UploadFileException("Erro ao fazer upload de imagem");
+            throw new UploadFileException("Erro ao fazer upload do arquivo:" + ex.getMessage());
         }
 
         user.setAvatarImgURL(avatarImgUri);
