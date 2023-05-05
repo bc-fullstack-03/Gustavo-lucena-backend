@@ -10,7 +10,7 @@ import br.com.bootcam.sysmap.models.dtos.user.ResponseUserRequest;
 import br.com.bootcam.sysmap.models.dtos.user.UpdateUserRequest;
 import br.com.bootcam.sysmap.models.entities.User;
 import br.com.bootcam.sysmap.services.auth.AuthenticationService;
-import br.com.bootcam.sysmap.services.fileUpload.IFileUploadService;
+import br.com.bootcam.sysmap.services.fileupload.IFileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

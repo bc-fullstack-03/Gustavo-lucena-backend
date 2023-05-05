@@ -1,9 +1,6 @@
 package br.com.bootcam.sysmap.api.handlers;
 
-import br.com.bootcam.sysmap.api.exceptions.MethodNotAllowedException;
-import br.com.bootcam.sysmap.api.exceptions.NoAccessException;
-import br.com.bootcam.sysmap.api.exceptions.ResourceNotFoundExceptions;
-import br.com.bootcam.sysmap.api.exceptions.UserAlreadyExistsException;
+import br.com.bootcam.sysmap.api.exceptions.*;
 import br.com.bootcam.sysmap.models.dtos.error.CustomError;
 import br.com.bootcam.sysmap.models.dtos.error.ValidationError;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +40,13 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<CustomError> UserAlreadyExists(UserAlreadyExistsException e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
+        CustomError err = new CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(UploadFileException.class)
+    public ResponseEntity<CustomError> UploadFile(UploadFileException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         CustomError err = new CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }

@@ -1,4 +1,4 @@
-package br.com.bootcam.sysmap.services.fileUpload;
+package br.com.bootcam.sysmap.services.fileupload;
 
 import org.springframework.web.multipart.MultipartFile;
 

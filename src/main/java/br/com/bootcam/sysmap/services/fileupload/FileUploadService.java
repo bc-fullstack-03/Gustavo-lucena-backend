@@ -1,4 +1,4 @@
-package br.com.bootcam.sysmap.services.fileUpload;
+package br.com.bootcam.sysmap.services.fileupload;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -11,7 +11,7 @@ import br.com.bootcam.sysmap.models.dtos.user.ResponseUserRequest;
 import br.com.bootcam.sysmap.models.entities.Post;
 import br.com.bootcam.sysmap.models.entities.User;
 import br.com.bootcam.sysmap.services.auth.AuthenticationService;
-import br.com.bootcam.sysmap.services.fileUpload.IFileUploadService;
+import br.com.bootcam.sysmap.services.fileupload.IFileUploadService;
 import br.com.bootcam.sysmap.services.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,11 +35,12 @@ public class PostService implements IPostService{
 
     @Override
     public String sendPost(String content, MultipartFile postFile){
-        if(content == null && postFile == null)
+        if(content == null && postFile == null){
             throw new MethodNotAllowedException("O post deve ter pelo menos uma imagem ou um texto");
+        }
 
-        User logged = AuthenticationService.getLoggedUser();
-        Post post = new Post(logged.getId(), content);
+        User loggedUser = AuthenticationService.getLoggedUser();
+        Post post = new Post(loggedUser.getId(), content);
 
         if (postFile != null){
             String fileUrl;
@@ -47,7 +48,7 @@ public class PostService implements IPostService{
             try {
                 fileUrl = fileUploadService.upload(postFile, post.getId());
             }catch (Exception ex){
-                throw new UploadFileException("Erro ao fazer upload de imagem");
+                throw new UploadFileException("Erro ao fazer upload do arquivo:" + ex.getMessage());
             }
 
             post.setFileUrl(fileUrl);

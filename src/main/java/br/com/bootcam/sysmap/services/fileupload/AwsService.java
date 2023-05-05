@@ -1,4 +1,4 @@
-package br.com.bootcam.sysmap.services.fileUpload;
+package br.com.bootcam.sysmap.services.fileupload;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
