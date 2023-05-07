@@ -7,6 +7,10 @@ O objetivo desse projeto é simular uma rede social baseado no twitter, com o ba
 Link da imagem no docker hub: 
 https://hub.docker.com/repository/docker/gustavolucen4/bootcamp-backend/general
 
+- Configuração do localstack
+![image](https://user-images.githubusercontent.com/87911974/236707631-086ac47c-9973-46c0-abf6-09e07b6cac86.png)
+
+
 - Para acessar o swagger da aplicação local: http://localhost:8082/swagger-ui/index.html
 
 #### Como ultilizar ?
