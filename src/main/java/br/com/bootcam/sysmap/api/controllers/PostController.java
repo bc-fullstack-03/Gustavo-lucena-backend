@@ -30,7 +30,7 @@ public class PostController {
         return new ResponseEntity<>(postService.sendPost(content, postFile), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Register a like of the logged user in na post")
+    @Operation(summary = "Register/Remove a like of the logged user in na post")
     @PostMapping("/like/{postId}")
     public ResponseEntity<Void> setLike(@PathVariable("postId") String postId){
         postService.setOrUnSetLike(postId);
