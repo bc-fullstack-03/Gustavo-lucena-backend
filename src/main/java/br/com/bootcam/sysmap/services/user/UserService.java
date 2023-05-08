@@ -1,6 +1,5 @@
 package br.com.bootcam.sysmap.services.user;
 
-import br.com.bootcam.sysmap.api.exceptions.MethodNotAllowedException;
 import br.com.bootcam.sysmap.api.exceptions.ResourceNotFoundExceptions;
 import br.com.bootcam.sysmap.api.exceptions.UploadFileException;
 import br.com.bootcam.sysmap.api.exceptions.UserAlreadyExistsException;

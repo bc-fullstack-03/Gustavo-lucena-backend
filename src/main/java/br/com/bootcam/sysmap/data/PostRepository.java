@@ -1,7 +1,6 @@
 package br.com.bootcam.sysmap.data;
 
 import br.com.bootcam.sysmap.models.entities.Post;
-import br.com.bootcam.sysmap.models.entities.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
