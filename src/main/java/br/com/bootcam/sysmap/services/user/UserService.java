@@ -89,13 +89,23 @@ public class UserService implements IUserService {
         return followers.stream().map(ResponseUserRequest::new).toList();
     }
 
-    public void followOrUnfollow(String email) {
+    @Override
+    public void follow(String email) {
         User logged = AuthenticationService.getLoggedUser();
         User followUser = getUserByEmail(email);
 
-        if (logged.getId().equals(followUser.getId())) throw new MethodNotAllowedException("Você não pode seguir se mesmo(a)");
+        logged.follow(followUser);
 
-        logged.followOrUnfollow(followUser);
+        save(logged);
+        save(followUser);
+    }
+
+    @Override
+    public void unfollow(String email) {
+        User logged = AuthenticationService.getLoggedUser();
+        User followUser = getUserByEmail(email);
+
+        logged.unfollow(followUser);
 
         save(logged);
         save(followUser);

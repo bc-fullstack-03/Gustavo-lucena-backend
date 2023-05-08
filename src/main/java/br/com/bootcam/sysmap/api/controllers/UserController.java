@@ -23,10 +23,17 @@ public class UserController {
 
     final private IUserService userService;
 
-    @Operation(summary = "Follow or Unfollow a user by email")
+    @Operation(summary = "Follow a user by email")
     @PostMapping("/follow/{emailFollow}")
-    public ResponseEntity<Void> followAndUnfollow(@PathVariable("emailFollow") String emailFollow){
-        userService.followOrUnfollow(emailFollow );
+    public ResponseEntity<Void> follow(@PathVariable("emailFollow") String emailFollow){
+        userService.follow(emailFollow );
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Unfollow a user by email")
+    @PostMapping("/unfollow/{emailFollow}")
+    public ResponseEntity<Void> unfollow(@PathVariable("emailFollow") String emailFollow){
+        userService.unfollow(emailFollow);
         return ResponseEntity.noContent().build();
     }
 

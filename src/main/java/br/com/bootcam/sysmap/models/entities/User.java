@@ -1,5 +1,6 @@
 package br.com.bootcam.sysmap.models.entities;
 
+import br.com.bootcam.sysmap.api.exceptions.MethodNotAllowedException;
 import br.com.bootcam.sysmap.models.dtos.user.CreateUserRequest;
 import br.com.bootcam.sysmap.models.dtos.user.UpdateUserRequest;
 import br.com.bootcam.sysmap.models.enums.Role;
@@ -77,13 +78,29 @@ public class User implements UserDetails {
         return following.contains(id);
     }
 
-    public void followOrUnfollow(User followUser){
+    public void follow(User followUser){
+        if (getId().equals(followUser.getId())){
+            throw new MethodNotAllowedException("Você não pode seguir se mesmo(a)");
+        }
+
         if (this.followingContains(followUser.getId())) {
-            this.removeFollowing(followUser.getId());
-            followUser.removeFollower(this.getId());
+            throw new MethodNotAllowedException("Você já segue este usuário");
         }else {
             this.addFollowing(followUser.getId());
             followUser.addFollower(this.getId());
+        }
+    }
+
+    public void unfollow(User unFollowUser){
+        if (getId().equals(unFollowUser.getId())){
+            throw new MethodNotAllowedException("Você não pode seguir se mesmo(a)");
+        }
+
+        if (this.followingContains(unFollowUser.getId())) {
+            this.removeFollowing(unFollowUser.getId());
+            unFollowUser.removeFollower(this.getId());
+        }else {
+            throw new MethodNotAllowedException("Você não segue este usuário.");
         }
     }
 
