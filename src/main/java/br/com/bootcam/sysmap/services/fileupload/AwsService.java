@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,15 +19,21 @@ public class AwsService {
 
     private final AmazonS3 amazonS3;
 
+    @Value("${cloud.aws.s3.endpoint}")
+    private String urlS3;
+
+    @Value("${aws.s3.bucket.name}")
+    private String bucket;
+
     public String upload(MultipartFile file, String fileName){
         String fileUri = "";
 
         try{
 
             var fileConverted = convertMultipartToFile(file);
-            amazonS3.putObject(new PutObjectRequest("demo-bucket", fileName, fileConverted).withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, fileConverted).withCannedAcl(CannedAccessControlList.PublicRead));
 
-            fileUri = "http://s3.localhost.localstack.cloud:4566"+"/"+"demo-bucket"+"/"+fileName;
+            fileUri = urlS3+"/"+bucket+"/"+fileName;
             fileConverted.delete();
 
         }catch (Exception ex){
