@@ -123,5 +123,4 @@ public class PostService implements IPostService{
 
         postRepository.delete(post);
     }
-
 }
