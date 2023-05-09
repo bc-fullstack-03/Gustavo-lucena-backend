@@ -1,6 +1,7 @@
 package br.com.bootcam.sysmap.models.entities;
 
 import br.com.bootcam.sysmap.api.exceptions.MethodNotAllowedException;
+import br.com.bootcam.sysmap.api.exceptions.NoAccessException;
 import br.com.bootcam.sysmap.api.exceptions.ResourceNotFoundExceptions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,9 +52,9 @@ public class Post {
         }
     }
 
-    public void isValidToDelete(UUID userId){
-        if (!this.userId.equals(userId)){
-            throw new MethodNotAllowedException("Você não pode deletar posts de outros usuários");
+    public void isAuthorized (UUID userId){
+        if(!this.userId.equals(userId)) {
+            throw new NoAccessException("Usuário não autorizado.");
         }
     }
 

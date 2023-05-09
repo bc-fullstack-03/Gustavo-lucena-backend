@@ -1,7 +1,6 @@
 package br.com.bootcam.sysmap.services.post;
 
 import br.com.bootcam.sysmap.api.exceptions.MethodNotAllowedException;
-import br.com.bootcam.sysmap.api.exceptions.NoAccessException;
 import br.com.bootcam.sysmap.api.exceptions.ResourceNotFoundExceptions;
 import br.com.bootcam.sysmap.api.exceptions.UploadFileException;
 import br.com.bootcam.sysmap.data.PostRepository;
@@ -96,10 +95,9 @@ public class PostService implements IPostService{
     @Override
     public String updatePost(RegisterPostRequest request, String postId) {
         Post postForUpdate = getPostById(postId);
-        User userPost = userService.getUserById(postForUpdate.getUserId());
         User logged = AuthenticationService.getLoggedUser();
 
-        if(!userPost.equals(logged)) throw new NoAccessException("Usuário não autorizado.");
+        postForUpdate.isAuthorized(logged.getId());
 
         postForUpdate.setContent(request.getContent());
         save(postForUpdate);
@@ -119,7 +117,7 @@ public class PostService implements IPostService{
         User logged = AuthenticationService.getLoggedUser();
         Post post = getPostById(postId);
 
-        post.isValidToDelete(logged.getId());
+        post.isAuthorized(logged.getId());
 
         postRepository.delete(post);
     }
