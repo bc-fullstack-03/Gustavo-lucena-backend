@@ -70,20 +70,20 @@ public class PostService implements IPostService{
 
     @Override
     public List<ResponsePostRequest> findAllPosts() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAllPostByOrderByCreatedAtDesc();
         return posts.stream().map(ResponsePostRequest::new).toList();
     }
 
     @Override
     public List<ResponsePostRequest> findAllPostsFromAnUser(String userId) {
-        List<Post> posts = postRepository.findAllPostByUserId(UUID.fromString(userId));
+        List<Post> posts = postRepository.findAllPostByUserIdOrderByCreatedAtDesc(UUID.fromString(userId));
         return posts.stream().map(ResponsePostRequest::new).toList();
     }
 
     @Override
     public List<ResponsePostRequest> findAllPostsFromFollowingsUser() {
         User user = AuthenticationService.getLoggedUser();
-        List<Post> posts = postRepository.findPostByUserIdIn(user.getFollowing());
+        List<Post> posts = postRepository.findPostByUserIdInOrderByCreatedAtDesc(user.getFollowing());
         return posts.stream().map(ResponsePostRequest::new).toList();
     }
 
@@ -112,12 +112,6 @@ public class PostService implements IPostService{
         return postRepository.findById(UUID.fromString(id)).orElseThrow(
                 () -> new ResourceNotFoundExceptions("Post não encontrado")
         );
-    }
-
-    @Override
-    public List<ResponsePostRequest> getPostsByUserId (String userId){
-        List<Post> posts = postRepository.findAllPostByUserId(UUID.fromString(userId));
-        return posts.stream().map(ResponsePostRequest::new).toList();
     }
 
     @Override

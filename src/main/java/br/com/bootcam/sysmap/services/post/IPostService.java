@@ -20,6 +20,5 @@ public interface IPostService {
     List<ResponseUserRequest> findAllUsersLikedPost(String postId);
     String updatePost(RegisterPostRequest request, String postId);
     Post getPostById (String id);
-    List<ResponsePostRequest>  getPostsByUserId (String userId);
     void deletePost(String postId);
 }

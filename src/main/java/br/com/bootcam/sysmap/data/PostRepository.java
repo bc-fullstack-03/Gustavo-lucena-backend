@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface PostRepository extends MongoRepository<Post, UUID> {
 
-    List<Post> findAllPostByUserId(UUID id);
-    List<Post> findPostByUserIdIn(List<UUID> usersId);
+    List<Post> findAllPostByOrderByCreatedAtDesc();
+    List<Post> findAllPostByUserIdOrderByCreatedAtDesc(UUID id);
+    List<Post> findPostByUserIdInOrderByCreatedAtDesc(List<UUID> usersId);
 }
