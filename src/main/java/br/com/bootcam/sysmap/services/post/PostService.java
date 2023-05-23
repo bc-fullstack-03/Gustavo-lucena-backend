@@ -39,7 +39,7 @@ public class PostService implements IPostService{
         }
 
         User loggedUser = AuthenticationService.getLoggedUser();
-        Post post = new Post(loggedUser.getId(), content);
+        Post post = new Post(loggedUser.getId(),loggedUser.getEmail() , content);
 
         if (postFile != null){
             String fileUrl;
@@ -71,6 +71,11 @@ public class PostService implements IPostService{
     public List<ResponsePostRequest> findAllPosts() {
         List<Post> posts = postRepository.findAllPostByOrderByCreatedAtDesc();
         return posts.stream().map(ResponsePostRequest::new).toList();
+    }
+
+    @Override
+    public ResponsePostRequest findPostById(String postId) {
+        return new ResponsePostRequest(getPostById(postId));
     }
 
     @Override

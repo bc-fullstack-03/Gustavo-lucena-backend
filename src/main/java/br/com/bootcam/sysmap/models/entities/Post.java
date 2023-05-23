@@ -21,16 +21,18 @@ public class Post {
     @Id
     private UUID id;
     private UUID userId;
+    private String userEmail;
     private String content;
     private String fileUrl;
     private List<UUID> likes;
     private List<Comment> comments;
     private LocalDateTime createdAt;
 
-    public Post(UUID userId, String content) {
+    public Post(UUID userId, String userEmail , String content) {
         setId();
         setCreatedAt();
         this.userId = userId;
+        this.userEmail = userEmail;
         this.content = content;
     }
 

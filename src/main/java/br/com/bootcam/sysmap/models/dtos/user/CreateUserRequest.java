@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateUserRequest {
 
-    @NotBlank
-    @Size(min = 3, max = 255, message = "Nome deve ter no mínimo 3 letras")
     private String name;
     @NotBlank
     @Email(message = "O email deve ser válido")

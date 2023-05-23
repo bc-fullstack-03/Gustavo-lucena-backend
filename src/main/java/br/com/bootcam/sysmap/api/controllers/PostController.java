@@ -44,7 +44,7 @@ public class PostController {
     }
 
     @Operation(summary = "Return all posts from an user")
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/user")
     public ResponseEntity<List<ResponsePostRequest>> findAllPostsFromAnUser(@PathVariable("userId") String userId){
         return ResponseEntity.ok(postService.findAllPostsFromAnUser(userId));
     }
@@ -59,6 +59,12 @@ public class PostController {
     @GetMapping("/{postId}/likes")
     public ResponseEntity<List<ResponseUserRequest>> findAllUsersLikedPost(@PathVariable("postId") String postId){
         return ResponseEntity.ok(postService.findAllUsersLikedPost(postId));
+    }
+
+    @Operation(summary = "Return a post by id")
+    @GetMapping("/{postId}")
+    public ResponseEntity<ResponsePostRequest> findPostById(@PathVariable("postId") String postId){
+        return ResponseEntity.ok(postService.findPostById(postId));
     }
 
     @Operation(summary = "Update a post")

@@ -26,8 +26,8 @@ public class WebSecurityConfig {
         );
 
         http
-                .csrf()
-                .disable()
+                .csrf().disable()
+                .cors().and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

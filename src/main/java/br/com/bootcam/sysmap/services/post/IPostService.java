@@ -15,6 +15,7 @@ public interface IPostService {
     String sendPost(String content, MultipartFile postFile);
     void setOrUnSetLike (String postId);
     List<ResponsePostRequest> findAllPosts();
+    ResponsePostRequest findPostById(String postId);
     List<ResponsePostRequest> findAllPostsFromAnUser(String userId);
     List<ResponsePostRequest> findAllPostsFromFollowingsUser();
     List<ResponseUserRequest> findAllUsersLikedPost(String postId);
