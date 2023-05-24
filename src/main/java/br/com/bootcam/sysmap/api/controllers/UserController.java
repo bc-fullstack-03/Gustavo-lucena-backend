@@ -38,8 +38,8 @@ public class UserController {
     }
 
     @Operation(summary = "Upload a photo for the profile user")
-    @PostMapping(value = "/avartaImg", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> registerAvatarImg(@RequestPart MultipartFile avatarImg){
+    @PostMapping(value = "/avatarImg", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> registerAvatarImg(@RequestParam(value = "avatarImg") MultipartFile avatarImg){
         return ResponseEntity.ok(userService.registerAvatarImg(avatarImg));
     }
 

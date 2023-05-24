@@ -87,6 +87,7 @@ public class PostService implements IPostService{
     @Override
     public List<ResponsePostRequest> findAllPostsFromFollowingsUser() {
         User user = AuthenticationService.getLoggedUser();
+        user.addFollowing(user.getId());
         List<Post> posts = postRepository.findPostByUserIdInOrderByCreatedAtDesc(user.getFollowing());
         return posts.stream().map(ResponsePostRequest::new).toList();
     }

@@ -51,7 +51,7 @@ public class UserService implements IUserService {
         user.setAvatarImgURL(avatarImgUri);
         save(user);
 
-        return null;
+        return user.getAvatarImgURL();
     }
 
     @Override
