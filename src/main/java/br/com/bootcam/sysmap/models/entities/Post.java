@@ -60,6 +60,13 @@ public class Post {
         }
     }
 
+    public List<Comment> getComments() {
+        if (comments == null){
+            return new ArrayList<>();
+        }
+        return comments;
+    }
+
     public void removeComment(UUID commentId, String loggedUserEmail){
         Comment comment = getComments().stream().filter(x -> x.getId().equals(commentId)).findAny()
                 .orElseThrow(() -> new ResourceNotFoundExceptions("Commentario não encontrado"));

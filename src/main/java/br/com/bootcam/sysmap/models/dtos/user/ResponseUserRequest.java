@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -16,15 +18,15 @@ public class ResponseUserRequest {
     private String name;
     private String email;
     private String avatarImgUrl;
-    private Integer followers;
-    private Integer following;
+    private List<UUID> followers;
+    private List<UUID> following;
 
     public ResponseUserRequest(User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
         this.avatarImgUrl = user.getAvatarImgURL();
-        this.followers = user.getFollowers() == null ? 0 : user.getFollowers().size();
-        this.following = user.getFollowing() == null ? 0 : user.getFollowing().size();
+        this.followers = user.getFollowers() == null ? new ArrayList<>() : user.getFollowers();
+        this.following = user.getFollowing() == null ? new ArrayList<>() : user.getFollowing();
     }
 }

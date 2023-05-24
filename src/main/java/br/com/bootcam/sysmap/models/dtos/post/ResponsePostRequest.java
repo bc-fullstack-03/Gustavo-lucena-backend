@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class ResponsePostRequest {
         this.userEmail = post.getUserEmail();
         this.content = post.getContent();
         this.fileUrl = post.getFileUrl();
-        this.likes = post.getLikes();
+        this.likes = post.getLikes() == null ? new ArrayList<>() : post.getLikes();
         this.comments = post.getComments() == null ? 0 : post.getComments().size();
         this.createdAt = post.getCreatedAt();
     }
