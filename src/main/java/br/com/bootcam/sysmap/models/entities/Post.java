@@ -25,7 +25,7 @@ public class Post {
     private String content;
     private String fileUrl;
     private List<UUID> likes;
-    private List<Comment> comments;
+    private List<Comment> comments =  new ArrayList<>();
     private LocalDateTime createdAt;
 
     public Post(UUID userId, String userEmail , String content) {
@@ -61,9 +61,6 @@ public class Post {
     }
 
     public List<Comment> getComments() {
-        if (comments == null){
-            return new ArrayList<>();
-        }
         return comments;
     }
 

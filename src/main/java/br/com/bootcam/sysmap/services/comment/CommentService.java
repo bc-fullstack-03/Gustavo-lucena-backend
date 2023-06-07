@@ -24,7 +24,6 @@ public class CommentService implements ICommentService{
     public ResponseCommentsRequest createComment(RegisterCommentRequest request, String postId) {
         User user = AuthenticationService.getLoggedUser();
         Post post = postService.getPostById(postId);
-        if(post.getComments() == null) post.setComments(new ArrayList<>());
 
         Comment comment = new Comment(user.getEmail(), request.getContent());
 
